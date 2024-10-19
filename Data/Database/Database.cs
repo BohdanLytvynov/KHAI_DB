@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -12,42 +13,43 @@ namespace Data.Database
     {
         #region Properties
 
-        private string m_host;
-        private string m_port;
-        private string m_username;
-        private string m_password;
-        private string m_databaseName;
+        private string m_conStr;
+
+        IDbConnectionBuilder m_connBuilder;
 
         #endregion
 
         #region Ctor
 
-        public Database(string host, string port, string username, string password, string databaseName)
+        public Database(string conStr, 
+            IDbConnectionBuilder conBuilder)
         {
-            m_host = host;
-            m_port = port;
-            m_username = username;
-            m_password = password;
-            m_databaseName = databaseName;
-        }
+            if (string.IsNullOrEmpty(conStr))
+                throw new ArgumentNullException(nameof(conStr));
 
+            if(conBuilder is null)
+                throw new ArgumentNullException(nameof(conBuilder));
+
+            m_conStr = conStr;
+
+            m_connBuilder = conBuilder;
+        }
+        
         #endregion
 
         #region Functions
 
         public IDbConnection Open()
-        { 
-            IDbConnection connection = null;
-
-            return connection;
+        {
+           return m_connBuilder.Buid(m_conStr);          
         }
 
         #region Static
 
-        public static IDbCommand BuildCommand()
-        { 
+        //public static IDbCommand BuildCommand()
+        //{ 
             
-        }
+        //}
 
         #endregion
 

@@ -1,9 +1,181 @@
 ﻿<Application x:Class="DB_Lab7.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DB_Lab7"
+             xmlns:local="clr-namespace:DB_Lab7" xmlns:system="clr-namespace:System;assembly=netstandard"
              StartupUri="Views\MainWindow.xaml">
     <Application.Resources>
-         
+
+        <Duration x:Key="animDurtion"> 0:0:0:0.2
+        </Duration>
+
+        <Duration x:Key="animDur_Button">0:0:0:0.02
+        </Duration>
+
+        <system:Double x:Key="TabHeaderFontSize">25
+        </system:Double>
+
+        <Color x:Key="TabItemBackNormal_Color">White
+        </Color>
+
+        <Color x:Key="TabItemBackMouseOver_Color">Black
+        </Color>
+
+        <Color x:Key="ButtonBackPressed_Color">#FF42AB3D
+        </Color>
+
+        <Color x:Key="ButtonBackDisabled_Color">Gray
+        </Color>
+
+        <SolidColorBrush x:Key="TabItemBackNormal" 
+                         Color="{StaticResource TabItemBackNormal_Color}"/>
+
+        <SolidColorBrush x:Key="TabItemBackMouseOver" 
+                         Color="{StaticResource TabItemBackMouseOver_Color}"/>
+
+        <SolidColorBrush x:Key="ButtonBackPressed" Color="{StaticResource ButtonBackPressed_Color}" />
+
+        <Style x:Key="Button" TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="brd" CornerRadius="10" BorderThickness="2" BorderBrush="Black"
+                                    Background="{StaticResource TabItemBackNormal}">
+                                <TextBlock x:Name="txt"
+                                           Text="{TemplateBinding Content}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           TextAlignment="Center"
+                                           />
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="brd"
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    To="{StaticResource TabItemBackNormal_Color}"
+                                                    Duration="{StaticResource animDurtion}"/>
+
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="txt"
+                                                    Storyboard.TargetProperty="Foreground.Color"
+                                                    To="{StaticResource TabItemBackMouseOver_Color}"
+                                                    Duration="{StaticResource animDurtion}"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="MouseOver">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="brd"
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    To="{StaticResource TabItemBackMouseOver_Color}"
+                                                    Duration="{StaticResource animDurtion}"/>
+
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="txt"
+                                                    Storyboard.TargetProperty="Foreground.Color"
+                                                    To="{StaticResource TabItemBackNormal_Color}"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="brd"
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    To="{StaticResource ButtonBackPressed_Color}"
+                                                    Duration="{StaticResource animDur_Button}"/>
+
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="txt"
+                                                    Storyboard.TargetProperty="Foreground.Color"
+                                                    To="{StaticResource TabItemBackNormal_Color}"
+                                                    Duration="{StaticResource animDur_Button}"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Disabled">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="brd"
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    To="{StaticResource ButtonBackDisabled_Color}"
+                                                    Duration="{StaticResource animDurtion}"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="TabItemStyle" TargetType="TabItem">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Border x:Name="brd" BorderBrush="Black"
+                                    BorderThickness="2" 
+                                    Background="{StaticResource TabItemBackNormal}">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           Margin="5,5,5,5"
+                                           x:Name="txt"
+                                           >
+                                    
+                                </TextBlock>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="SelectionStates">
+                                        <VisualState x:Name="Unselected">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetName="brd"
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    To="{StaticResource TabItemBackNormal_Color}"
+                                                    Duration="{StaticResource animDurtion}"/>
+                                                
+                                                <ColorAnimation
+                                                    Storyboard.TargetProperty="Foreground.Color"
+                                                    Storyboard.TargetName="txt"
+                                                    To="{StaticResource TabItemBackMouseOver_Color}"
+                                                    Duration="{StaticResource animDurtion}"
+                                                    />
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Selected">
+                                            <Storyboard>
+                                                <ColorAnimation
+                                                    Storyboard.TargetProperty="Background.Color"
+                                                    Storyboard.TargetName="brd"
+                                                    To="{StaticResource TabItemBackMouseOver_Color}"
+                                                    Duration="{StaticResource animDurtion}"
+                                                    />
+                                                <ColorAnimation
+                                                    Storyboard.TargetProperty="Foreground.Color"
+                                                    Storyboard.TargetName="txt"
+                                                    To="{StaticResource TabItemBackNormal_Color}"
+                                                    Duration="{StaticResource animDurtion}"
+                                                    />
+                                            </Storyboard>
+                                        </VisualState>
+                                        
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
     </Application.Resources>
 </Application>

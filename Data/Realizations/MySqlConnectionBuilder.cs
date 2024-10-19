@@ -1,10 +1,6 @@
 ﻿using Data.Interfaces;
-using System;
-using System.Collections.Generic;
+using MySql.Data.MySqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Realizations
 {
@@ -12,7 +8,9 @@ namespace Data.Realizations
     {
         public IDbConnection Buid(string conString)
         {
-            throw new NotImplementedException();
+            MySqlConnection con = new MySqlConnection(conString);
+
+            return con;
         }
     }
 }

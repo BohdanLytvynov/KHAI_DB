@@ -4,9 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DB_Lab7"
+        xmlns:vm="clr-namespace:DB_Lab7.ViewModels" 
+        xmlns:system="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="{Binding Title, UpdateSourceTrigger=PropertyChanged}" 
+        Height="450" Width="800"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
 
+    <Grid x:Name="main">
+        <Frame x:Name="main_frame" Content="{Binding Frame,
+            UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
