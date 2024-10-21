@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 
@@ -6,115 +7,100 @@ namespace SecureStringExtensions_DotNetCore
 {
     public unsafe static class SecureStringExtensions
     {
-        #region Static Ctor
-
-        static SecureStringExtensions()
+        public static unsafe string GetString(this SecureString sstr)
         {
-            m_enc = Encoding.GetEncoding(1251);
-        }
+            StringBuilder sb = new StringBuilder();
 
-        #endregion
+            if (sstr == null)
+            {
+                return String.Empty;
+            }
 
-        #region Static state variables
+            if (sstr.Length == 0)
+            {
+                return String.Empty;
+            }
 
-        private static Encoding m_enc;
-
-        #endregion
-
-        #region Methods
-        public static byte[] GetBytes(this SecureString secString, Encoding enc)
-        {
-            int length = secString.Length;
-
-            IntPtr ptr = IntPtr.Zero;
-
-            byte[] workArray = null;
-
-            byte[] result = null;
-
-            GCHandle? handle = null;
+            IntPtr bstrPointer = IntPtr.Zero;
 
             try
             {
-                char* bstrBytes = (char*)Marshal.SecureStringToBSTR(secString);
-                workArray = new byte[length];
-                handle = GCHandle.Alloc(workArray, GCHandleType.Pinned); // Hats off to Tobias Bauer
+                bstrPointer = Marshal.SecureStringToBSTR(sstr);
 
-                for (int i = 0; i < workArray.Length; i++)
+                char* charPtr = (char*)bstrPointer.ToPointer();
+
+                for (; *charPtr != 0; ++charPtr)
                 {
-                    if (*bstrBytes != 0)
-                        workArray[i] = (byte)(*bstrBytes++);
+                    sb.Append(*charPtr);
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message.ToString());
+            }
+            finally
+            {
+                if (bstrPointer != IntPtr.Zero)
+                    Marshal.ZeroFreeBSTR(bstrPointer);
+            }
 
-                //Recode encoding
-                result = Encoding.Convert(m_enc, enc, workArray);
+            return sb.ToString();
+        }
+
+        public static unsafe bool ArePasswordsEqual(this SecureString pass1, SecureString pass2)
+        {           
+            if (pass1 == null || pass2 == null)
+            {
+                return false;             
+            }
+
+            if (pass1.Length != pass2.Length)
+            {
+                return false;               
+            }
+
+            IntPtr ptrBSTR1 = IntPtr.Zero;
+
+            IntPtr ptrBSTR2 = IntPtr.Zero;
+
+            try
+            {
+                ptrBSTR1 = Marshal.SecureStringToBSTR(pass1);
+
+                ptrBSTR2 = Marshal.SecureStringToBSTR(pass2);
+
+                char* ptr1 = (char*)ptrBSTR1.ToPointer();
+
+                char* ptr2 = (char*)ptrBSTR2.ToPointer();
+
+                for (; *ptr1 != 0 && *ptr2 != 0; ++ptr1, ++ptr2)
+                {
+                    if (*ptr1 != *ptr2)
+                    {                        
+                        return false;
+                    }
+                }
             }
             catch (Exception e)
             {
 
+                Debug.WriteLine($"{e.Message}");
             }
             finally
             {
-                handle?.Free();
-
-                if (ptr != IntPtr.Zero)
-                    Marshal.ZeroFreeBSTR(ptr);
-            }
-
-            return result;
-        }
-
-        public static bool PassEquals(this SecureString SecureString1, SecureString SecureString2)
-        {
-            bool isCorrect = true;
-
-            if (SecureString1 == null || SecureString2 == null)
-                return false;
-
-            if (SecureString1.Length != SecureString2.Length)
-                return false;
-
-            IntPtr ss1 = IntPtr.Zero;
-
-            IntPtr ss2 = IntPtr.Zero;
-
-            try
-            {
-                ss1 = Marshal.SecureStringToBSTR(SecureString1);
-
-                ss2 = Marshal.SecureStringToBSTR(SecureString2);
-
-                char* ptr1 = (char*)ss1.ToPointer();
-
-                char* ptr2 = (char*)ss2.ToPointer();
-
-                for (; *ptr1 != 0; ptr1++, ptr2++)
+                if (ptrBSTR1 != IntPtr.Zero)
                 {
-                    if (*ptr1 != *ptr2)
-                    {
-                        isCorrect = false;
+                    Marshal.ZeroFreeBSTR(ptrBSTR1);
+                }
 
-                        break;
-                    }
+                if (ptrBSTR2 != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeBSTR(ptrBSTR2);
                 }
             }
-            catch (Exception)
-            {
-                isCorrect = false;
-            }
-            finally
-            {
-                Marshal.FreeBSTR(ss1);
 
-                Marshal.FreeBSTR(ss2);
-            }
-
-            return isCorrect;
+            return true;
         }
-
-
-
-        #endregion
     }
 }
 

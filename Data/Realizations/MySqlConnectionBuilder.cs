@@ -8,9 +8,7 @@ namespace Data.Realizations
     {
         public IDbConnection Buid(string conString)
         {
-            MySqlConnection con = new MySqlConnection(conString);
-
-            return con;
+            return new MySqlConnection(conString);      
         }
     }
 }

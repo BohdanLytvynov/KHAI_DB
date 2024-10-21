@@ -1,4 +1,5 @@
 ﻿using Data.Interfaces;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Database
 {
-    public class Database
+    public class Database : IDatabase
     {
         #region Properties
 
@@ -17,12 +18,15 @@ namespace Data.Database
 
         IDbConnectionBuilder m_connBuilder;
 
+        ISQLCommandBuilder m_sqlCommandBuilder;
+
         #endregion
 
         #region Ctor
 
         public Database(string conStr, 
-            IDbConnectionBuilder conBuilder)
+            IDbConnectionBuilder conBuilder,
+            ISQLCommandBuilder sQLCommandBuilder)
         {
             if (string.IsNullOrEmpty(conStr))
                 throw new ArgumentNullException(nameof(conStr));
@@ -43,15 +47,29 @@ namespace Data.Database
         {
            return m_connBuilder.Buid(m_conStr);          
         }
+        
+        public IDbCommand BuildCommand(IDbConnection dbConnection, string sql,
+            Action<IDataParameterCollection> configureParams)
+        {
+            if (dbConnection is null)
+                throw new ArgumentNullException(nameof(dbConnection));
 
-        #region Static
+            if (sql is null)
+                throw new ArgumentNullException(nameof(sql));
 
-        //public static IDbCommand BuildCommand()
-        //{ 
-            
-        //}
+            if (string.IsNullOrEmpty(sql))
+                throw new Exception("Sql command wasn't set!");
 
-        #endregion
+            IDbCommand SqlCommand = m_sqlCommandBuilder.Build();
+            SqlCommand.Connection = dbConnection;
+            SqlCommand.CommandText = sql;
+
+            if (configureParams is not null)
+                configureParams.Invoke(SqlCommand.Parameters);
+
+            return SqlCommand;
+
+        }
 
         #endregion
     }

@@ -1,6 +1,8 @@
 ﻿using Data.Database;
 using Data.Interfaces;
+using Data.Models.Accounts;
 using Data.Realizations;
+using DB_Lab7.ViewModels.Pages;
 using DB_Lab7.Views;
 using DB_Lab7.Views.Pages;
 using MySql.Data.MySqlClient;
@@ -13,11 +15,16 @@ namespace DB_Lab7.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        #region Windows
+        #region Pages
         LoginRegisterPage m_loginRegisterPage;
+
+        MainPage m_mainPage;
         #endregion
 
         #region Fields
+
+        private Account m_current;
+
         private Database database;
 
         private IDbConnectionBuilder m_dbConnectionBuilder;

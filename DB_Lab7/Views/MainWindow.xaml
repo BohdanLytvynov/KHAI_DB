@@ -15,7 +15,11 @@
     </Window.DataContext>
 
     <Grid x:Name="main">
-        <Frame x:Name="main_frame" Content="{Binding Frame,
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Frame Grid.Row="1" x:Name="main_frame" Content="{Binding Frame,
             UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>

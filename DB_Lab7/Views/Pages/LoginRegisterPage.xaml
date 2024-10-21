@@ -9,14 +9,11 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LoginRegisterPage"
       d:DataContext="{d:DesignInstance vm:LoginRegisterPageViewModel, IsDesignTimeCreatable=True}">
-    <Page.DataContext>
-        <vm:LoginRegisterPageViewModel/>
-    </Page.DataContext>
     <Grid>
         <TabControl>
             <TabItem Header="Login" 
                  Style="{StaticResource TabItemStyle}"
-                 FontSize="{StaticResource TabHeaderFontSize}"
+                 FontSize="{StaticResource TabHeaderFontSize}"                 
                  >
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -36,16 +33,18 @@
                         <RowDefinition Height="88*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="Login"/>
-                    <TextBox Grid.Row="1" Grid.Column="3"/>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Login,
+                        UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="Password"/>
                     <PasswordBox Grid.Row="3" Grid.Column="3"
-                                 x:Name="pass1"
+                                 x:Name="pass1" PasswordChanged="pass1_PasswordChanged"
                                  />
 
                     <Button Grid.Row="5" Grid.Column="3" Width="200"
                             Content="Login"
-                            Style="{StaticResource Button}"/>
+                            Style="{StaticResource Button}"
+                            Command="{Binding OnLoginButtonPressed}"/>
                 </Grid>
             </TabItem>
 
@@ -98,11 +97,13 @@
                                Grid.Column="1"
                                Text="Password"
                                />
-                    <PasswordBox Grid.Row="5" Grid.Column="3"/>
+                    <PasswordBox Grid.Row="5" Grid.Column="3"
+                                 x:Name="pass2" PasswordChanged="pass2_PasswordChanged"/>
 
                     <TextBlock Grid.Row="7" Grid.Column="1"
                                Text="Repeat Password"/>
-                    <PasswordBox Grid.Row="7" Grid.Column="3"/>
+                    <PasswordBox x:Name="pass3"
+                                 Grid.Row="7" Grid.Column="3" PasswordChanged="pass3_PasswordChanged"/>
 
                     <TextBlock Grid.Row="9" 
                                Grid.Column="1"
