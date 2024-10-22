@@ -4,11 +4,25 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DB_Lab7.Views.Pages"
+      xmlns:vm="clr-namespace:DB_Lab7.ViewModels.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MainPage">
+      Title="MainPage" Background="#FFD8D8D8"
+      d:DataContext="{d:DesignInstance vm:MainPageViewModel, IsDesignTimeCreatable=True}">
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="67*"/>
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Width="150" Height="35"
+                    Content="Get Tanks"
+                    Style="{StaticResource Button}"
+                    Margin="10,10"/>
+        </WrapPanel>
+        <GridSplitter Grid.Row="1"                        
+                      Style="{StaticResource GridSplitter_Vertical}"/>
     </Grid>
 </Page>

@@ -12,6 +12,6 @@ namespace Data.Interfaces
         IDbConnection Open();
 
         IDbCommand BuildCommand(IDbConnection dbConnection, string sql,
-            Action<IDataParameterCollection> configureParams);
+            Action<IDataParameterCollection> configureParams = default);
     }
 }

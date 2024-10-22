@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,10 @@ namespace DB_Lab7.ViewModels.Pages
         #endregion
 
         #region Ctor
-
+        public MainPageViewModel(IDatabase database)
+        {
+            
+        }
         #endregion
 
         #region Functions

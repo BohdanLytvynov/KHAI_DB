@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Data.Interfaces;
+using DB_Lab7.ViewModels.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,13 @@ namespace DB_Lab7.Views.Pages
     /// </summary>
     public partial class MainPage : Page
     {
-        public MainPage()
+        MainPageViewModel m_vm;
+
+        public MainPage(IDatabase database)
         {
             InitializeComponent();
+
+            m_vm = new MainPageViewModel(database);
         }
     }
 }

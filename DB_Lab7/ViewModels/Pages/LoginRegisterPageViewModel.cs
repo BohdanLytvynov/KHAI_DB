@@ -1,9 +1,14 @@
-﻿using SecureStringExtensions_DotNetCore;
+﻿using Data.Interfaces;
+using Data.Models;
+using Data.Models.Accounts;
+using Domain.AccountManagers;
+using SecureStringExtensions_DotNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Security;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,9 +20,17 @@ namespace DB_Lab7.ViewModels.Pages
 {
     internal class LoginRegisterPageViewModel : ViewModelBase
     {
+        #region Events
+
+        public EventHandler<Account> OnLoginFinished;
+ 
+        #endregion
+
         #region Fields
         private string m_title;
-        
+
+        AccountManager m_accountManager;
+
         #region Login
 
         private string m_login;
@@ -77,12 +90,18 @@ namespace DB_Lab7.ViewModels.Pages
 
         public ICommand OnLoginButtonPressed { get; }
 
+        public ICommand OnRegisterButtonPressed { get; }
+
+        public ICommand OnClearButtonPressed { get; }
+
         #endregion
 
         #region Ctor
-        public LoginRegisterPageViewModel()
+        public LoginRegisterPageViewModel(IDatabase database)
         {
             #region Init Fields
+
+            m_accountManager = new AccountManager(database);
 
             m_password = new();
 
@@ -91,6 +110,8 @@ namespace DB_Lab7.ViewModels.Pages
             m_title = "Login/Register";
 
             m_login = string.Empty;
+
+            m_login_register = string.Empty;
 
             m_name = string.Empty;
 
@@ -108,6 +129,18 @@ namespace DB_Lab7.ViewModels.Pages
                 (
                     OnLoginButtonPressedExecute,
                     CanOnLoginButtonPressedExecute
+                );
+
+            OnRegisterButtonPressed = new Command
+                (
+                    OnRegisterButtonPressedExecute,
+                    CanOnRegisterButtonPressedExecute
+                );
+
+            OnClearButtonPressed = new Command
+                (
+                    OnClearButtonPressedExecute,
+                    CanOnClearButtonPressedExecute
                 );
 
             #endregion
@@ -145,8 +178,57 @@ namespace DB_Lab7.ViewModels.Pages
 
         private void OnLoginButtonPressedExecute(object p)
         {
-            MessageBox.Show($"Login: {m_login}, Password: {m_password.GetString()}", "", 
-                MessageBoxButton.OK);
+            string error = string.Empty;
+
+            Account? account = m_accountManager.Login(m_login, m_password.GetString(), out error);
+
+            MessageBox.Show(string.IsNullOrEmpty(error)? "Login Successful!" : error, "Login/Register",
+                MessageBoxButton.OK, string.IsNullOrEmpty(error)? MessageBoxImage.Information : MessageBoxImage.Error);
+
+            OnLoginFinished?.Invoke(this, account);
+        }
+
+        #endregion
+
+        #region On Register Button Pressed Execute
+
+        private bool CanOnRegisterButtonPressedExecute(object p)
+        {
+            return true;
+        }
+
+        private void OnRegisterButtonPressedExecute(object p)
+        {
+            Role role = new Role() { Id = -1, RoleName = "User" };
+
+            Account account = new Account(-1, LoginRegister, m_password2.GetString(), Name, Surename, Email, 
+                Gender == 0? true : false, Birthday, role);
+
+            string error = string.Empty;
+
+            var r = m_accountManager.Register(account, out error);         
+
+            MessageBox.Show(string.IsNullOrEmpty(error) ? "Registration Completed. Now you can login." : $"Error on register atempt! Error: {error}!", "Login/Register",
+                    MessageBoxButton.OK, string.IsNullOrEmpty(error) ? MessageBoxImage.Information : MessageBoxImage.Error);            
+        }
+
+        #endregion
+
+        #region On Clear Button Pressed
+
+        private bool CanOnClearButtonPressedExecute(object p)
+        {
+            return true;
+        }
+
+        private void OnClearButtonPressedExecute(object p)
+        { 
+            LoginRegister = string.Empty;
+            Name = string.Empty;
+            Surename = string.Empty;
+            Email = string.Empty;
+            Gender = 0;
+            Birthday = DateTime.Now;
         }
 
         #endregion

@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:DB_Lab7.Views.Pages"
       xmlns:vm="clr-namespace:DB_Lab7.ViewModels.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="500" d:DesignWidth="800"
+      MinHeight="500"
       Title="LoginRegisterPage"
       d:DataContext="{d:DesignInstance vm:LoginRegisterPageViewModel, IsDesignTimeCreatable=True}">
     <Grid>
@@ -60,38 +61,39 @@
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="8*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="3*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="8*"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="8*"/>
+                        <RowDefinition Height="18*"/>
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="7*"/>
                         <RowDefinition Height="35"/>
-                        <RowDefinition Height="27*"/>
+                        <RowDefinition Height="7*"/>
                         <RowDefinition Height="35"/>
+                        <RowDefinition Height="7*"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="9*"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="9*"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="18*"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="18*"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="1" 
                                Grid.Column="1" 
                                Text="Login"  />
                     <TextBox Grid.Row="1" 
-                             Grid.Column="3" />
+                             Grid.Column="3" 
+                             Text="{Binding LoginRegister, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     <TextBlock Grid.Row="3" 
                                Grid.Column="1"
                                Text="Email"                               
                                />
-                    <TextBox Grid.Row="3" Grid.Column="3">
-                    </TextBox>
+                    <TextBox Grid.Row="3" Grid.Column="3"
+                             Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                             />
+
 
                     <TextBlock Grid.Row="5" 
                                Grid.Column="1"
@@ -109,20 +111,25 @@
                                Grid.Column="1"
                                Text="Name (opt.)"/>
 
-                    <TextBox Grid.Row="9" Grid.Column="3">
-                    </TextBox>
+                    <TextBox Grid.Row="9" Grid.Column="3"
+                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                             />
+
 
                     <TextBlock Grid.Row="11" Grid.Column="1"
                                Text="Surename(opt.)"/>
 
                     <TextBox Grid.Row="11" Grid.Column="3"
-                             >
-                    </TextBox>
+                             Text="{Binding Surename, UpdateSourceTrigger=PropertyChanged,
+                        Mode=TwoWay}"
+                             />
+
 
                     <TextBlock Grid.Row="13" Grid.Column="1"
                                Text="Gender"/>
 
-                    <ComboBox Grid.Row="13" Grid.Column="3">
+                    <ComboBox Grid.Row="13" Grid.Column="3"
+                              SelectedIndex="{Binding Gender, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <ComboBoxItem>
                             <Label Content="Male"/>
                         </ComboBoxItem>
@@ -134,14 +141,22 @@
                     <TextBlock Grid.Row="15" Grid.Column="1"
                                Text="Birthday(opt.)"/>
                     <DatePicker Grid.Row="15" Grid.Column="3"
-                                MaxWidth="300"/>
+                                MaxWidth="300"
+                                SelectedDate="{Binding Birthday,
+                        UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                />
                     <Button Grid.Row="19" Grid.Column="3"
                             Width="200" Content="Register"
-                            Style="{StaticResource Button}"/>
-
-                    <Button Grid.Row="19" Grid.Column="4"
+                            Style="{StaticResource Button}"
+                            Command="{Binding OnRegisterButtonPressed}"
+                            />
+                    <DockPanel Grid.Row="19" Grid.Column="4">
+                        <Button 
                             Width="200" Content="Clear"
-                            Style="{StaticResource Button}"/>
+                            Style="{StaticResource Button}"                            
+                            DockPanel.Dock="Left"
+                            Command="{Binding OnClearButtonPressed}"/>
+                    </DockPanel>
                 </Grid>
             </TabItem>
         </TabControl>

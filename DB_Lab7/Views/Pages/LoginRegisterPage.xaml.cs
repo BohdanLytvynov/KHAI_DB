@@ -1,19 +1,9 @@
-﻿using DB_Lab7.ViewModels.Pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Data.Interfaces;
+using Data.Models.Accounts;
+using DB_Lab7.ViewModels.Pages;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DB_Lab7.Views.Pages
 {
@@ -22,11 +12,18 @@ namespace DB_Lab7.Views.Pages
     /// </summary>
     public partial class LoginRegisterPage : Page
     {
+        #region Events
+
+        public EventHandler<Account> OnLoginFinished { get=> m_viewModel.OnLoginFinished; 
+            set => m_viewModel.OnLoginFinished = value; }
+        
+        #endregion
+
         LoginRegisterPageViewModel m_viewModel;
 
-        public LoginRegisterPage()
+        public LoginRegisterPage(IDatabase database)
         {
-            m_viewModel = new LoginRegisterPageViewModel();
+            m_viewModel = new LoginRegisterPageViewModel(database);
 
             InitializeComponent();   
             

@@ -34,9 +34,14 @@ namespace Data.Database
             if(conBuilder is null)
                 throw new ArgumentNullException(nameof(conBuilder));
 
+            if (sQLCommandBuilder is null)
+                throw new ArgumentNullException(nameof(sQLCommandBuilder));
+
             m_conStr = conStr;
 
             m_connBuilder = conBuilder;
+
+            m_sqlCommandBuilder = sQLCommandBuilder;
         }
         
         #endregion
@@ -45,7 +50,12 @@ namespace Data.Database
 
         public IDbConnection Open()
         {
-           return m_connBuilder.Buid(m_conStr);          
+           var b = m_connBuilder.Buid(m_conStr);
+
+           if(b.State == ConnectionState.Closed)
+                b.Open();
+
+           return b;
         }
         
         public IDbCommand BuildCommand(IDbConnection dbConnection, string sql,

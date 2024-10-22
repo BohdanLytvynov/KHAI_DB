@@ -34,6 +34,70 @@
 
         <SolidColorBrush x:Key="ButtonBackPressed" Color="{StaticResource ButtonBackPressed_Color}" />
 
+        <Style x:Key="GridSplitter_Vertical" TargetType="GridSplitter">
+            <Style.Setters>
+                <Setter Property="Height" Value="7"/>
+                <Setter Property="Background" Value="Black"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="{StaticResource animDurtion}"
+                                                To="{StaticResource ButtonBackPressed_Color}"
+                                                Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Duration="{StaticResource animDurtion}"
+                                    To="Black"
+                                    Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="GridSplitter_Horizontal" TargetType="GridSplitter">
+            <Style.Setters>
+                <Setter Property="Width" Value="7"/>
+                <Setter Property="Background" Value="Black"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="{StaticResource animDurtion}"
+                                        To="{StaticResource ButtonBackPressed_Color}"
+                                        Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                            Duration="{StaticResource animDurtion}"
+                            To="Black"
+                            Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="Button" TargetType="Button">
             <Style.Setters>
                 <Setter Property="Template">
@@ -47,6 +111,8 @@
                                            Foreground="{TemplateBinding Foreground}"
                                            FontFamily="{TemplateBinding FontFamily}"
                                            TextAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
                                            />
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">

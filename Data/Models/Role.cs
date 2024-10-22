@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    internal class Role
+    public class Role
     {
+        public int Id { get; set; }
+
+        public string RoleName { get; set; }
+
+        public Role()
+        {
+            
+        }
     }
 }
