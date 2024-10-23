@@ -194,7 +194,11 @@ namespace DB_Lab7.ViewModels.Pages
 
         private bool CanOnRegisterButtonPressedExecute(object p)
         {
-            return true;
+            return !string.IsNullOrEmpty(m_login_register) &&
+                 !string.IsNullOrEmpty(m_email) &&
+                 !string.IsNullOrEmpty(m_name) &&
+                 !string.IsNullOrEmpty(m_surename) &&
+                 m_password.Length > 0 && m_password2.Length > 0;
         }
 
         private void OnRegisterButtonPressedExecute(object p)
@@ -216,11 +220,8 @@ namespace DB_Lab7.ViewModels.Pages
 
         #region On Clear Button Pressed
 
-        private bool CanOnClearButtonPressedExecute(object p)
-        {
-            return true;
-        }
-
+        private bool CanOnClearButtonPressedExecute(object p) => true;
+                   
         private void OnClearButtonPressedExecute(object p)
         { 
             LoginRegister = string.Empty;
