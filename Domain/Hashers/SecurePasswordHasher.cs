@@ -66,6 +66,9 @@ namespace Domain.Extensions
         /// <returns>Could be verified?</returns>
         public static bool Verify(string password, string hashedPassword)
         {
+            if(string.IsNullOrEmpty(hashedPassword))
+                return false;
+
             // Check hash
             if (!IsHashSupported(hashedPassword))
             {

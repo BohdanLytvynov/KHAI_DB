@@ -18,6 +18,8 @@ namespace DB_Lab7.ViewModels
         #region Pages
         LoginRegisterPage m_loginRegisterPage;
 
+        AdminPage m_adminPage;
+
         MainPage m_mainPage;
         #endregion
 
@@ -25,7 +27,7 @@ namespace DB_Lab7.ViewModels
 
         private Account m_current;
 
-        private Database database;
+        private Database m_database;
 
         private IDbConnectionBuilder m_dbConnectionBuilder;
 
@@ -73,13 +75,15 @@ namespace DB_Lab7.ViewModels
 
             m_sqlCommandBuilder = new Data.Realizations.MySqlCommandBuilder();
 
-            database = new Database(conStr, m_dbConnectionBuilder, m_sqlCommandBuilder);
+            m_database = new Database(conStr, m_dbConnectionBuilder, m_sqlCommandBuilder);
 
             m_frame = new object();
 
-            m_loginRegisterPage = new LoginRegisterPage(database);
+            m_loginRegisterPage = new LoginRegisterPage(m_database);
 
-            m_mainPage = new MainPage(database);
+            m_mainPage = new MainPage(m_database);
+
+            m_adminPage = new AdminPage(m_database);
 
             m_loginRegisterPage.OnLoginFinished += OnLoginFinished;
 
@@ -98,7 +102,16 @@ namespace DB_Lab7.ViewModels
                 m_current = account;
                 UserName = account.Login;
                 UserRole = account.Role.RoleName;
-                Frame = m_mainPage;
+
+                if (account.Role.RoleName is null)
+                    return;
+
+                if (account.Role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    Frame = m_adminPage;
+                }
+                else
+                    Frame = m_mainPage;
             }
         }
 

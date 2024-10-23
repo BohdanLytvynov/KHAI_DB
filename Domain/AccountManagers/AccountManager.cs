@@ -67,7 +67,7 @@ namespace Domain.AccountManagers
                 }
             }
 
-            bool passCorrect = SecurePasswordHasher.Verify(password, current_pass);
+            bool passCorrect = SPH.Verify(password, current_pass);
 
             if (!passCorrect)
             {
@@ -82,7 +82,7 @@ namespace Domain.AccountManagers
             using (var connection = m_database.Open())
             {
                 using (var command = m_database.BuildCommand(connection,
-                    "SELECT a.Account_Id, Login, Email, Surename, Name, Gender, Birthday, " +
+                    "SELECT Login, Email, Surename, Name, Gender, Birthday, " +
                     "ur.RoleName FROM TanksDb.Account a " +
                     "JOIN TanksDb.Account_UserRole aur ON aur.Account_Id = a.Account_Id " +
                     "JOIN TanksDb.UserRole ur ON ur.UserRole_Id = aur.UserRole_Id " +
@@ -98,15 +98,15 @@ namespace Domain.AccountManagers
                         using (var reader = command.ExecuteReader())
                         {
                             reader.Read();
-                            account.AccountId = reader.GetInt32(0);
-                            account.Login = reader.GetString(1);
+                            account.AccountId = current_id;
+                            account.Login = reader.GetString(0);
                             account.Password = current_pass;
-                            account.Email = reader.GetString(2);
-                            account.Surename = reader.GetString(3);
-                            account.Name = reader.GetString(4);
-                            account.Gender = reader.GetBoolean(5);
-                            account.Birthday = reader.GetDateTime(6);
-                            account.Role.RoleName = reader.GetString(7);
+                            account.Email = reader.GetString(1);
+                            account.Surename = reader.GetString(2);
+                            account.Name = reader.GetString(3);
+                            account.Gender = reader.GetBoolean(4);
+                            account.Birthday = reader.GetDateTime(5);
+                            account.Role.RoleName = reader.GetString(6);
                         }
                     }
                     catch (Exception e)
@@ -166,8 +166,8 @@ namespace Domain.AccountManagers
                 {
                     try
                     {
-                        if (com.ExecuteNonQuery() > 0)
-                            return true;
+                        if (com.ExecuteNonQuery() <= 0)
+                            throw new Exception("An Error occured on adding new Account to DataBase");
                     }
                     catch (Exception e)
                     {
