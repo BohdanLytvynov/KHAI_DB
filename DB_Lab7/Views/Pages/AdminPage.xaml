@@ -4,13 +4,39 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DB_Lab7.Views.Pages"
-      xmlns:vm="clr-namespace:DB_Lab7.ViewModels.Pages"
+      xmlns:vm="clr-namespace:DB_Lab7.ViewModels.Pages" 
+      xmlns:system="clr-namespace:System;assembly=netstandard"
+      xmlns:entity="clr-namespace:Data.Enums;assembly=Data"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="AdminPage"
+      d:DesignHeight="450" d:DesignWidth="800"      
       d:DataContext="{d:DesignInstance vm:AdminPageViewModel, IsDesignTimeCreatable=True}">
 
+    <Page.Resources>
+        <system:Double x:Key="TabItemFontsize">25
+        </system:Double>
+
+        <ObjectDataProvider x:Key="entities" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="entity:EntityType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Page.Resources>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox IsEditable="True" ItemsSource="{Binding Source={StaticResource entities}}"  Grid.Column="1"/>
+        </Grid>
         
     </Grid>
 </Page>
