@@ -1,4 +1,5 @@
 ﻿using Data.Models.Base;
+using Data.Models.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,7 @@ namespace Data.Models.Cannons
         public float FocusTime { get; set; }
 
         public float Scatter { get; set; }
+
+        public IEnumerable<Projectile> Projectiles { get; set; }
     }
 }

@@ -11,8 +11,4 @@
     <ProjectReference Include="..\SecureStringExtensions_DotNetCore\SecureStringExtensions_DotNetCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>

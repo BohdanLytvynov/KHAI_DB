@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ViewModelBaseLibDotNetCore.VM;
 
 namespace DB_Lab7.ViewModels.Pages
@@ -18,6 +19,12 @@ namespace DB_Lab7.ViewModels.Pages
 
         #endregion
 
+        #region Commands
+
+        public ICommand OnGetTanksButtonPressed { get;}
+
+        #endregion
+
         #region Ctor
         public MainPageViewModel(IDatabase database)
         {
@@ -26,6 +33,17 @@ namespace DB_Lab7.ViewModels.Pages
         #endregion
 
         #region Functions
+
+        #region On Get Tanks Button Pressed
+
+        private bool CanOnGetTanksButtonPressedExecute(object p) => true;
+
+        private void OnGetTanksButtonPressedExecute(object p)
+        { 
+            
+        }
+
+        #endregion
 
         #endregion
     }
