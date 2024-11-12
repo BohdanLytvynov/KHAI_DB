@@ -1,18 +1,34 @@
-﻿using Data.Interfaces;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using Data.Attributes.Tables;
+using Data.Interfaces;
+using Data.Models.Base;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using RU = Data.Utilities.ReflexionUtility;
 
 namespace Data.Database
 {
+    public enum ScriptAction : byte 
+    {
+        Create = 1, Read, Update, Delete
+    }
+
+    public struct ScriptDescription
+    {
+        public string Entity { get; }
+        public ScriptAction Action { get; }
+
+        public ScriptDescription(string entity, ScriptAction action)
+        {
+            Entity = entity;
+            Action = action;
+        }
+    }
+
     public class Database : IDatabase
     {
         #region Properties
+
+        public Dictionary<ScriptDescription, string> SqlScripts { get; set; }
 
         private string m_conStr;
 
@@ -20,13 +36,16 @@ namespace Data.Database
 
         ISQLCommandBuilder m_sqlCommandBuilder;
 
+        ISqlScriptBuilder m_sqlScriptBuilder;
+
         #endregion
 
         #region Ctor
 
         public Database(string conStr, 
             IDbConnectionBuilder conBuilder,
-            ISQLCommandBuilder sQLCommandBuilder)
+            ISQLCommandBuilder sQLCommandBuilder,
+            ISqlScriptBuilder sqlScriptBuilder)
         {
             if (string.IsNullOrEmpty(conStr))
                 throw new ArgumentNullException(nameof(conStr));
@@ -37,11 +56,20 @@ namespace Data.Database
             if (sQLCommandBuilder is null)
                 throw new ArgumentNullException(nameof(sQLCommandBuilder));
 
+            if(sqlScriptBuilder is null)
+                throw new ArgumentNullException(nameof(sqlScriptBuilder));
+
             m_conStr = conStr;
 
             m_connBuilder = conBuilder;
 
             m_sqlCommandBuilder = sQLCommandBuilder;
+
+            m_sqlScriptBuilder = sqlScriptBuilder;
+
+            SqlScripts = new();
+
+            BuildSqlScripts();
         }
         
         #endregion
@@ -79,6 +107,23 @@ namespace Data.Database
 
             return SqlCommand;
 
+        }
+
+        private void BuildSqlScripts()
+        {
+            //Get Assembly
+            var assembly = RU.GetAssembly(new Table("").GetType());
+
+            //Get All model types
+            var models = assembly.GetTypes().Where(t => t.BaseType.Name.Equals("DataBaseEntity"));
+
+            //Build SQL Scripts for each Entity
+            foreach (var model in models)
+            {
+                var script = m_sqlScriptBuilder.BuildReadScript(model, models);
+
+                SqlScripts.Add(new ScriptDescription(model.Name, ScriptAction.Read), script);
+            }
         }
 
         #endregion

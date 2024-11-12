@@ -2,12 +2,15 @@
 using Data.Models.Engines;
 using Data.Models.Nations;
 using Data.Models.Tank_Turrets;
+using Data.Models.VehicleClasses;
 
 namespace Data.Models.Tanks
 {
     public class Tank : DataBaseEntity<int>
     {        
         public string Name { get; set; } = string.Empty;
+
+        public Vehicle_Class Vehicle_Class { get; set; } = default;
 
         public float Strength { get; set; }
 
@@ -19,7 +22,7 @@ namespace Data.Models.Tanks
 
         public uint Tank_Level { get; set; }
 
-        public string Nation { get; set; } = default;
+        public Nation Nation { get; set; } = default; 
 
         public List<Tank_Turret> Tank_Turret { get; set; } = new();
 

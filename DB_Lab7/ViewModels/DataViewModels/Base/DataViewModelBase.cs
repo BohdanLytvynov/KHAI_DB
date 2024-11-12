@@ -14,6 +14,9 @@ namespace DB_Lab7.ViewModels.DataViewModels.Base
         [IgnorePropertyDiscovery]
         public uint Number { get; set; }
 
+        [IgnorePropertyDiscovery]
+        public bool AdminMode { get; set; }
+
         public DataViewModelBase(TId Id)
         {
             this.Id = Id;
