@@ -10,11 +10,16 @@ namespace Data.Attributes.Bindings
     public class OneToMany : Attribute
     {
         #region Properties
+        
+        public string ForeignKey { get; set; }
 
-        public string AdjTable { get; set; }
+        #endregion
 
-        public string ForeignKey { get; set; }        
-
+        #region Ctor
+        public OneToMany(string foreignKey)
+        {
+            ForeignKey = foreignKey;
+        }
         #endregion
     }
 }

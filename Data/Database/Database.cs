@@ -1,4 +1,5 @@
 ﻿using Data.Attributes.Tables;
+using Data.Exceptions;
 using Data.Interfaces;
 using Data.Models.Base;
 using System.Data;
@@ -117,10 +118,13 @@ namespace Data.Database
             //Get All model types
             var models = assembly.GetTypes().Where(t => t.BaseType.Name.Equals("DataBaseEntity"));
 
+            if (models.Count() == 0)
+                throw new FailToFindDataBaseModels();
+
             //Build SQL Scripts for each Entity
             foreach (var model in models)
             {
-                var script = m_sqlScriptBuilder.BuildReadScript(model, models);
+                var script = m_sqlScriptBuilder.BuildScript(model, models, ScriptAction.Read);
 
                 SqlScripts.Add(new ScriptDescription(model.Name, ScriptAction.Read), script);
             }
