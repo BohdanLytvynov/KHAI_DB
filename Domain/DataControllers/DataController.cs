@@ -2,24 +2,20 @@
 using Data.Models.Tanks;
 using Data.SqlScripts;
 using Domain.Interfaces;
+using Domain.OperationResults;
 using MySql.Data.MySqlClient;
 using System.Data;
 using ZstdSharp.Unsafe;
 
 namespace Domain.DataControllers
 {
-    public enum SqlCommands : byte 
-    {
-        GetAll = 1
-    }
-
-    public class DataController : IDataController
+    public class DataController<TSqlCommandType> : IDataController<TSqlCommandType>
     {
         #region Fields
 
         IDatabase m_database;
 
-        Dictionary<string, SqlScript> m_SqlCommands;
+        Dictionary<TSqlCommandType, string> m_SqlCommandsStorage;
 
         #endregion
 
@@ -27,44 +23,106 @@ namespace Domain.DataControllers
         {
             m_database = db;
 
-            m_SqlCommands = new();
+            m_SqlCommandsStorage = new();
         }
-
-        public DataTable ExecuteQueryCommand(int UserId, SqlCommands sqlCommand)
+        
+        public IOperResult<DataTable> ExecuteQueryCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs)
         {
             DataTable dt = new DataTable();
 
-            using (var con = m_database.Open())
+            Exception ex = null;
+
+            IOperResult<DataTable> res = null;
+
+            try
             {
-                using (var command = m_database.BuildCommand(con,
-                    m_SqlCommands[sqlCommand.ToString()].CommandText,
-                    (config) => 
-                    { 
-                        var param = m_SqlCommands[sqlCommand.ToString()].Params;
-
-                        var comParams = (config as MySqlParameterCollection);
-
-                        foreach (var p in param)
-                        {
-                            comParams.AddWithValue(p.Item1, p.Item2);
-                        }
-                    }))
+                using (var con = m_database.Open())
                 {
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(command as MySqlCommand))
+                    using (var command = m_database.BuildCommand(con,
+                        m_SqlCommandsStorage[sqlCommand],
+                        (config) =>
+                        {
+                            if (Parametrs is not null)
+                            {
+                                var comParams = (config as MySqlParameterCollection);
+
+                                foreach (var p in Parametrs)
+                                {
+                                    comParams.AddWithValue(p.Item1, p.Item2);
+                                }
+                            }                            
+                        }))
                     {
-                        da.Fill(dt);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(command as MySqlCommand))
+                        {
+                            da.Fill(dt);
+                        }
                     }
                 }
             }
+            catch (Exception e)
+            {
+                ex = e;
+            }
+            finally
+            {
+                res = new OperationResult<DataTable>(dt, ex);
+            }
 
-            return dt;
+            return res;
         }
 
-        public void RegisterSqlScript(params (string, SqlScript)[] sqlScripts)
+        public IOperResult<int> ExecuteCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs)
+        {
+            DataTable dt = new DataTable();
+
+            Exception ex = null;
+
+            IOperResult<int> res = null;
+
+            int rows = -1;
+
+            try
+            {
+                using (var con = m_database.Open())
+                {
+                    using (var command = m_database.BuildCommand(con,
+                        m_SqlCommandsStorage[sqlCommand],
+                        (config) =>
+                        {
+                            if (Parametrs is not null)
+                            {                                
+                                var comParams = (config as MySqlParameterCollection);
+
+                                foreach (var p in Parametrs)
+                                {
+                                    comParams.AddWithValue(p.Item1, p.Item2);
+                                }
+                            }
+
+                        }))
+                    {
+                        rows = command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ex = e;
+            }
+            finally
+            {
+                res = new OperationResult<int>(rows, ex);
+            }
+
+            return res;
+        }
+
+        public void RegisterSqlScript(params (TSqlCommandType, string)[] sqlScripts)
         {
             foreach (var script in sqlScripts)
             {
-                m_SqlCommands.Add(script.Item1, script.Item2);
+                m_SqlCommandsStorage.Add(script.Item1, script.Item2);
             }
         }
     }

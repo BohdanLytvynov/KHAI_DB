@@ -8,6 +8,8 @@ using DB_Lab7.Views.Pages;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Windows;
+using System.Windows.Input;
+using ViewModelBaseLibDotNetCore.Commands;
 using ViewModelBaseLibDotNetCore.VM;
 using CM = System.Configuration.ConfigurationManager;
 
@@ -15,6 +17,12 @@ namespace DB_Lab7.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
+        #region Delegates
+
+        Func<Account> m_GetAccountDelegate;
+
+        #endregion
+
         #region Pages
         LoginRegisterPage m_loginRegisterPage;
 
@@ -40,6 +48,8 @@ namespace DB_Lab7.ViewModels
         private string m_UserName;
 
         private string m_UserRole;
+
+        private Visibility m_LogOutVisibilityButton;    
         #endregion
 
         #region Properties
@@ -51,6 +61,14 @@ namespace DB_Lab7.ViewModels
         public string UserName { get => m_UserName; set => Set(ref m_UserName, value); }
 
         public string UserRole { get => m_UserRole; set => Set(ref m_UserRole, value); }
+
+        public Visibility LogOutVisibilityButton { get => m_LogOutVisibilityButton; set => Set(ref m_LogOutVisibilityButton, value); }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand OnLogOutButtonPressed { get; set; }
 
         #endregion
 
@@ -77,11 +95,15 @@ namespace DB_Lab7.ViewModels
 
             m_database = new Database(conStr, m_dbConnectionBuilder, m_sqlCommandBuilder);
 
+            m_database.OnExceptionHappened += DataBaseExceptioHandler;
+
             m_frame = new object();
 
             m_loginRegisterPage = new LoginRegisterPage(m_database);
 
-            m_mainPage = new MainPage(m_database);
+            m_GetAccountDelegate = new Func<Account>(() => m_current);
+
+            m_mainPage = new MainPage(m_database, m_GetAccountDelegate);
 
             m_adminPage = new AdminPage(m_database);
 
@@ -89,11 +111,30 @@ namespace DB_Lab7.ViewModels
 
             Frame = m_loginRegisterPage;
 
-            #endregion        
+            m_LogOutVisibilityButton = Visibility.Collapsed;
+            
+            #endregion
+
+            #region Init Commands
+
+            OnLogOutButtonPressed = new Command(
+                OnLogOutButtonPressedExecute,
+                CanOnLogOutButtonPressedExecute
+                );
+
+            #endregion
         }
+
+
         #endregion
 
         #region Functions
+
+        private void DataBaseExceptioHandler(object source, DataBaseExceptionEventArgs args)
+        {
+            if (args.Exception is not null)
+                MessageBox.Show($"Error Happened in Database: {args.Exception.Message}.", Title, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
 
         private void OnLoginFinished(object o, Account account)
         {
@@ -112,6 +153,8 @@ namespace DB_Lab7.ViewModels
                 }
                 else
                     Frame = m_mainPage;
+
+                LogOutVisibilityButton = Visibility.Visible;
             }
         }
 
@@ -137,6 +180,22 @@ namespace DB_Lab7.ViewModels
 
             return connectionStringBuilder.ConnectionString;
         }
+
+        #region On Log Out Button Pressed
+
+        private bool CanOnLogOutButtonPressedExecute(object p) => true;
+
+        private void OnLogOutButtonPressedExecute(object p)
+        {
+            Frame = m_loginRegisterPage;
+            UserName = string.Empty;
+            UserRole = string.Empty;   
+            m_current = new Account();
+            LogOutVisibilityButton = Visibility.Collapsed;
+        }
+
+        #endregion
+
         #endregion
     }
 }

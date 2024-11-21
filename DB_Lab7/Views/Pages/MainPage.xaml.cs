@@ -1,4 +1,5 @@
 ﻿using Data.Interfaces;
+using Data.Models.Accounts;
 using DB_Lab7.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,13 @@ namespace DB_Lab7.Views.Pages
     {
         MainPageViewModel m_vm;
 
-        public MainPage(IDatabase database)
+        public MainPage(IDatabase database, Func<Account> getAccountDelegate)
         {
             InitializeComponent();
 
-            m_vm = new MainPageViewModel(database);
+            m_vm = new MainPageViewModel(database, getAccountDelegate);
+
+            this.DataContext = m_vm;
         }
     }
 }

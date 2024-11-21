@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace Domain.Interfaces
 {
-    public interface IDataController
-    {        
-        
+    public interface IDataController<TSqlCommandType>
+    {
+        void RegisterSqlScript(params (TSqlCommandType, string)[] sqlScripts);
+
+        IOperResult<DataTable> ExecuteQueryCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs);
+
+        IOperResult<int> ExecuteCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs);
     }
 }

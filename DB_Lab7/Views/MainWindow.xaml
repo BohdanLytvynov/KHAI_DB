@@ -20,15 +20,17 @@
             <RowDefinition Height="5"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0"> 
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"/>
                 <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="286*"/>
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="30*"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="205*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
             <TextBlock FontSize="25"
                        Text="User:" Grid.Column="1"                       
@@ -44,6 +46,10 @@
                        Text="{Binding UserRole, UpdateSourceTrigger=PropertyChanged}"
                        Grid.Column="5"
                        />
+            <Button Content="Logout" Grid.Column="7" Style="{StaticResource Button}"
+                    Visibility="{Binding LogOutVisibilityButton, UpdateSourceTrigger=PropertyChanged}"
+                    FontSize="18"
+                    Command="{Binding OnLogOutButtonPressed}"/>
         </Grid>
         <Rectangle Grid.Row="1" Fill="Black"/>
         <Frame Grid.Row="2" x:Name="main_frame" 

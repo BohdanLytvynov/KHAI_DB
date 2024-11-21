@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Data.Database;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Interfaces
-{    
+{
     public interface IDatabase
     {
+        public EventHandler<DataBaseExceptionEventArgs>? OnExceptionHappened { get; set; }
+
         IDbConnection Open();
 
         IDbCommand BuildCommand(IDbConnection dbConnection, string sql,
