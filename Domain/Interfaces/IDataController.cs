@@ -6,8 +6,12 @@ namespace Domain.Interfaces
     {
         void RegisterSqlScript(params (TSqlCommandType, string)[] sqlScripts);
 
-        IOperResult<DataTable> ExecuteQueryCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs);
+        IOperResult<DataTable> ExecuteQueryCommand(TSqlCommandType sqlCommandType, params (string, object)[] Parametrs);
 
-        IOperResult<int> ExecuteCommand(TSqlCommandType sqlCommand, params (string, object)[] Parametrs);
+        IOperResult<DataTable> ExecuteQueryCommand(string sqlCommand, params (string, object)[] Parametrs);
+
+        IOperResult<int> ExecuteCommand(TSqlCommandType sqlCommandType, params (string, object)[] Parametrs);
+
+        IOperResult<int> ExecuteCommand(string sqlCommand, params (string, object)[] Parametrs);
     }
 }

@@ -31,23 +31,54 @@
                     Command="{Binding OnGetMyTanksButtonPressed}"
                     />
 
-            <Button Content="Select" Width="100" Style="{StaticResource Button}"
+            <Button Content="Buy" Width="100" Style="{StaticResource Button}"
         Margin="10,10" Height="35"
         Command="{Binding OnSelectTankButtonPressed}"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBox Width="400" Height="35" Margin="10,0"/>
 
-                <Button Content="Serch" Width="100" Style="{StaticResource Button}"
-                    Margin="10,0"/>
+            <Button Content="Sell" Width="100" Height="35" Style="{StaticResource Button}"
+                    Margin="10,10"
+                    Command="{Binding OnSellButtonPressed}"
+                    Visibility="{Binding SellButtonVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBox Width="400" Height="25" Margin="10,0"                         
+                         ToolTip="{Binding ToolTipSearch, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource TxtBoxInputStyle}"
+                         FontSize="14"
+                         >
+                    <TextBox.Text>
+                        <Binding Path="Search" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <Button Content="Search" Width="100"
+                            Style="{StaticResource Button}"
+                            Height="25"
+                    Margin="10,0"
+                        Command="{Binding OnSearchButtonPressed}"/>
             </StackPanel>
         </WrapPanel>
         <GridSplitter Grid.Row="1"                        
                       Style="{StaticResource GridSplitter_Vertical}"/>
-        <DataGrid Grid.Row="2" 
-                  ItemsSource="{Binding Table, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                  AutoGenerateColumns="True"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  SelectedIndex="{Binding SelectedDataRowIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="34*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="1" HorizontalAlignment="Center"
+                   Content="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}" FontSize="20"
+                   Foreground="Black" FontWeight="Bold"/>
+            <DataGrid Grid.Row="2" 
+          ItemsSource="{Binding Table, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+          AutoGenerateColumns="True"
+          IsReadOnly="True"
+          SelectionMode="Single"
+          SelectedIndex="{Binding SelectedDataRowIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        </Grid>
     </Grid>
 </Page>

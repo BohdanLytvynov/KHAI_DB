@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Threading;
 
 
 namespace ViewModelBaseLibDotNetCore.VM
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged, IDataErrorInfo
     {
         private Dispatcher? m_dispatcher;
 
+        private bool [] m_validArray;
+
         public virtual Dispatcher Dispatcher { set => m_dispatcher = value; }
+
+        public virtual string Error => throw new NotImplementedException();
+
+        public virtual string this[string columnName] => throw new NotImplementedException();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -67,6 +67,25 @@ namespace ViewModelBaseLibDotNetCore.VM
                 throw new Exception("Dispatcher is not initialized!");
 
             m_dispatcher?.Invoke(work);
+        }
+
+        protected virtual void InitValidArray(int count)
+        { 
+            m_validArray = new bool[count];
+        }
+
+        protected virtual bool Validate(int startInsex, int endIndex)
+        {
+            for(int i = startInsex; i <= endIndex; ++i)            
+                if (!m_validArray[i])
+                    return false;                            
+
+            return true;
+        }
+
+        protected virtual void SetValidArray(int index, bool value)
+        { 
+            m_validArray[index] = value;
         }
     }
 }

@@ -244,9 +244,30 @@
             </Style.Setters>
         </Style>
 
-        <!--#region Data Template -->
-        
-        <!--#endregion-->
+        <Style x:Key="TxtBoxInputStyle" TargetType="TextBox">
+            <Style.Setters>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Validation.ErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border BorderBrush="OrangeRed" BorderThickness="3">
+                                <Grid>
+                                    <AdornedElementPlaceholder/>
+                                    <TextBlock Text="{Binding [0].ErrorContent}" Foreground="OrangeRed"
+                               VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="10"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="False">
+                    <Setter Property="BorderBrush" Value="#FF23A829"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
     </Application.Resources>
 </Application>
