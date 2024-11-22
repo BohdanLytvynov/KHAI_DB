@@ -24,10 +24,12 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"/>
                 <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="286*"/>
+                <ColumnDefinition Width="37*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="85"/>
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="205*"/>
+                <ColumnDefinition Width="41*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="10"/>
@@ -39,14 +41,18 @@
                        Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"
                        Grid.Column="2"
                        />
+            <Button Grid.Column="4" Content="About" FontSize="16"
+                    Style="{StaticResource Button}"
+                    Command="{Binding OnAboutButtonPressed}"/>
+            
             <TextBlock FontSize="25" 
                        Text="Role:"
-                       Grid.Column="4"/>
+                       Grid.Column="6"/>
             <TextBlock FontSize="25"
                        Text="{Binding UserRole, UpdateSourceTrigger=PropertyChanged}"
-                       Grid.Column="5"
+                       Grid.Column="7"
                        />
-            <Button Content="Logout" Grid.Column="7" Style="{StaticResource Button}"
+            <Button Content="Logout" Grid.Column="9" Style="{StaticResource Button}"
                     Visibility="{Binding LogOutVisibilityButton, UpdateSourceTrigger=PropertyChanged}"
                     FontSize="18"
                     Command="{Binding OnLogOutButtonPressed}"/>

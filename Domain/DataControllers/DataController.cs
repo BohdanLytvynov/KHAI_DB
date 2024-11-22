@@ -1,11 +1,8 @@
 ﻿using Data.Interfaces;
-using Data.Models.Tanks;
-using Data.SqlScripts;
 using Domain.Interfaces;
 using Domain.OperationResults;
-using MySql.Data.MySqlClient;
 using System.Data;
-using ZstdSharp.Unsafe;
+using System.Data.Common;
 
 namespace Domain.DataControllers
 {
@@ -25,7 +22,7 @@ namespace Domain.DataControllers
 
             m_SqlCommandsStorage = new();
         }
-        
+
         public IOperResult<DataTable> ExecuteQueryCommand(TSqlCommandType sqlCommandType, params (string, object)[] Parametrs)
         {
             DataTable dt = new DataTable();
@@ -44,17 +41,14 @@ namespace Domain.DataControllers
                         {
                             if (Parametrs is not null)
                             {
-                                var comParams = (config as MySqlParameterCollection);
-
-                                foreach (var p in Parametrs)
-                                {
-                                    comParams.AddWithValue(p.Item1, p.Item2);
-                                }
-                            }                            
+                                m_database.ConfigureParameters((DbParameterCollection)config, Parametrs);
+                            }
                         }))
                     {
-                        using (MySqlDataAdapter da = new MySqlDataAdapter(command as MySqlCommand))
+                        using (DbDataAdapter da = m_database.CreateDataAdapter())
                         {
+                            da.SelectCommand = (DbCommand)command;
+
                             da.Fill(dt);
                         }
                     }
@@ -76,7 +70,7 @@ namespace Domain.DataControllers
         {
             DataTable dt = new DataTable();
 
-            Exception ex = null;
+            Exception? ex = null;
 
             IOperResult<DataTable> res = null;
 
@@ -90,17 +84,14 @@ namespace Domain.DataControllers
                         {
                             if (Parametrs is not null)
                             {
-                                var comParams = (config as MySqlParameterCollection);
-
-                                foreach (var p in Parametrs)
-                                {
-                                    comParams.AddWithValue(p.Item1, p.Item2);
-                                }
+                                m_database.ConfigureParameters((DbParameterCollection)config, Parametrs);
                             }
                         }))
                     {
-                        using (MySqlDataAdapter da = new MySqlDataAdapter(command as MySqlCommand))
+                        using (DbDataAdapter da = m_database.CreateDataAdapter())
                         {
+                            da.SelectCommand = (DbCommand)command;
+
                             da.Fill(dt);
                         }
                     }
@@ -122,7 +113,7 @@ namespace Domain.DataControllers
         {
             DataTable dt = new DataTable();
 
-            Exception ex = null;
+            Exception? ex = null;
 
             IOperResult<int> res = null;
 
@@ -137,13 +128,8 @@ namespace Domain.DataControllers
                         (config) =>
                         {
                             if (Parametrs is not null)
-                            {                                
-                                var comParams = (config as MySqlParameterCollection);
-
-                                foreach (var p in Parametrs)
-                                {
-                                    comParams.AddWithValue(p.Item1, p.Item2);
-                                }
+                            {
+                                m_database.ConfigureParameters((DbParameterCollection)config, Parametrs);
                             }
 
                         }))
@@ -184,12 +170,7 @@ namespace Domain.DataControllers
                         {
                             if (Parametrs is not null)
                             {
-                                var comParams = (config as MySqlParameterCollection);
-
-                                foreach (var p in Parametrs)
-                                {
-                                    comParams.AddWithValue(p.Item1, p.Item2);
-                                }
+                                m_database.ConfigureParameters((DbParameterCollection)config, Parametrs);
                             }
 
                         }))

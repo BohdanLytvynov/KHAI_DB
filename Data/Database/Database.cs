@@ -1,5 +1,6 @@
 ﻿using Data.Interfaces;
 using System.Data;
+using System.Data.Common;
 using System.Reflection;
 
 namespace Data.Database
@@ -14,11 +15,19 @@ namespace Data.Database
         }
     }
 
+    #region Delegates
+
+    public delegate void ParametersConfiguratorDelegate(DbParameterCollection paramsCollection, params (string, object)[] Parameters);
+
+    #endregion
+
     public class Database : IDatabase
-    {
+    {      
         #region Events
 
         private EventHandler<DataBaseExceptionEventArgs>? m_onExceptionHappened;
+
+        private ParametersConfiguratorDelegate m_ParametersConfigurator;
 
         #endregion
 
@@ -30,8 +39,12 @@ namespace Data.Database
 
         ISQLCommandBuilder m_sqlCommandBuilder;
 
+        IDataAdapterBuilder m_dataAdapterBuilder;
+
         public EventHandler<DataBaseExceptionEventArgs>? OnExceptionHappened 
         { get => m_onExceptionHappened; set => m_onExceptionHappened = value; }
+
+        protected ParametersConfiguratorDelegate ParametersConfigurator => m_ParametersConfigurator;
 
         #endregion
 
@@ -39,7 +52,9 @@ namespace Data.Database
 
         public Database(string conStr, 
             IDbConnectionBuilder conBuilder,
-            ISQLCommandBuilder sQLCommandBuilder)
+            ISQLCommandBuilder sQLCommandBuilder,
+            IDataAdapterBuilder dataAdapterBuilder,
+            ParametersConfiguratorDelegate ParametersConfigurator)
         {
             if (string.IsNullOrEmpty(conStr))
                 throw new ArgumentNullException(nameof(conStr));
@@ -50,11 +65,24 @@ namespace Data.Database
             if (sQLCommandBuilder is null)
                 throw new ArgumentNullException(nameof(sQLCommandBuilder));
             
+            if(dataAdapterBuilder is null)
+                throw new ArgumentNullException(nameof(dataAdapterBuilder));
+
+            if(ParametersConfigurator is null)
+                throw new ArgumentNullException(nameof(ParametersConfigurator));
+
+            if(string.IsNullOrEmpty(conStr))
+                throw new ArgumentNullException(nameof(conStr));
+
             m_conStr = conStr;
 
             m_connBuilder = conBuilder;
 
-            m_sqlCommandBuilder = sQLCommandBuilder;                                
+            m_sqlCommandBuilder = sQLCommandBuilder;   
+            
+            m_dataAdapterBuilder = dataAdapterBuilder;
+
+            m_ParametersConfigurator = ParametersConfigurator;
         }
         
         #endregion
@@ -103,7 +131,17 @@ namespace Data.Database
             return SqlCommand;
 
         }
-        
+
+        public DbDataAdapter CreateDataAdapter()
+        {
+            return m_dataAdapterBuilder.Build();
+        }
+
+        public void ConfigureParameters(DbParameterCollection paramCollection, params (string, object)[] Parameters)
+        {
+            m_ParametersConfigurator.Invoke(paramCollection, Parameters);
+        }
+
         #endregion
     }
 }

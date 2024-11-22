@@ -9,6 +9,13 @@ namespace Data.Enums
     public enum EntityType : byte
     {
         Select_Entity = 0,
-        Projectile
+        Account,
+        Cannon,
+        Engine,
+        Nation,
+        Projectile,
+        Tank_Turret,
+        Tank,
+        Vehicle_Class
     }
 }

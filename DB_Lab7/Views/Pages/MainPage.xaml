@@ -63,7 +63,7 @@
             </StackPanel>
         </WrapPanel>
         <GridSplitter Grid.Row="1"                        
-                      Style="{StaticResource GridSplitter_Vertical}"/>
+                      Style="{StaticResource GridSplitter_Horizontal}"/>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>

@@ -36,7 +36,7 @@
 
         <Style x:Key="GridSplitter_Vertical" TargetType="GridSplitter">
             <Style.Setters>
-                <Setter Property="Height" Value="7"/>
+                <Setter Property="Width" Value="7"/>
                 <Setter Property="Background" Value="Black"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -68,7 +68,7 @@
 
         <Style x:Key="GridSplitter_Horizontal" TargetType="GridSplitter">
             <Style.Setters>
-                <Setter Property="Width" Value="7"/>
+                <Setter Property="Height" Value="7"/>
                 <Setter Property="Background" Value="Black"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>

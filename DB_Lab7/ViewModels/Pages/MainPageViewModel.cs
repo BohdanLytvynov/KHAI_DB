@@ -392,8 +392,9 @@ namespace DB_Lab7.ViewModels.Pages
                     MessageBox.Show("Tank Selected", Title, MessageBoxButton.OK, MessageBoxImage.Information);
 
                     SelectedDataRowIndex = -1;
-                }
 
+                    OnGetMyTanksButtonPressedExecute(null);
+                }
             });
         }
 

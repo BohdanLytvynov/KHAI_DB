@@ -7,6 +7,7 @@ using DB_Lab7.Views;
 using DB_Lab7.Views.Pages;
 using MySql.Data.MySqlClient;
 using System.Configuration;
+using System.Data.Common;
 using System.Windows;
 using System.Windows.Input;
 using ViewModelBaseLibDotNetCore.Commands;
@@ -41,6 +42,8 @@ namespace DB_Lab7.ViewModels
 
         private ISQLCommandBuilder m_sqlCommandBuilder;
 
+        private IDataAdapterBuilder m_adapterBuilder;
+
         private string m_title;
 
         private object m_frame;
@@ -68,7 +71,9 @@ namespace DB_Lab7.ViewModels
 
         #region Commands
 
-        public ICommand OnLogOutButtonPressed { get; set; }
+        public ICommand OnLogOutButtonPressed { get; }
+
+        public ICommand OnAboutButtonPressed { get; }
 
         #endregion
 
@@ -93,7 +98,23 @@ namespace DB_Lab7.ViewModels
 
             m_sqlCommandBuilder = new Data.Realizations.MySqlCommandBuilder();
 
-            m_database = new Database(conStr, m_dbConnectionBuilder, m_sqlCommandBuilder);
+            m_adapterBuilder = new MySqlDataAdapterBuilder();
+
+            m_database = new Database(conStr, 
+                m_dbConnectionBuilder, 
+                m_sqlCommandBuilder,
+                m_adapterBuilder,
+                (paramsCollection, Parameters) 
+                => 
+                {
+                    var pCol = (paramsCollection as MySqlParameterCollection);
+
+                    foreach (var item in Parameters)
+                    {
+                        pCol.AddWithValue(item.Item1, item.Item2);
+                    }
+                    
+                });
 
             m_database.OnExceptionHappened += DataBaseExceptioHandler;
 
@@ -120,6 +141,11 @@ namespace DB_Lab7.ViewModels
             OnLogOutButtonPressed = new Command(
                 OnLogOutButtonPressedExecute,
                 CanOnLogOutButtonPressedExecute
+                );
+
+            OnAboutButtonPressed = new Command(
+                OnAboutButtonPressedExecute,
+                CanOnAboutButtonPressedExecute
                 );
 
             #endregion
@@ -192,6 +218,20 @@ namespace DB_Lab7.ViewModels
             UserRole = string.Empty;   
             m_current = new Account();
             LogOutVisibilityButton = Visibility.Collapsed;
+        }
+
+        #endregion
+
+        #region On About Nutton Pressed
+
+        private bool CanOnAboutButtonPressedExecute(object p) => true;
+
+        private void OnAboutButtonPressedExecute(object p)
+        {
+            MessageBox.Show("This programm was made by Junior Software Egineer Bohdan Lytvynov!", 
+                m_title, 
+                MessageBoxButton.OK, 
+                MessageBoxImage.Information);
         }
 
         #endregion
