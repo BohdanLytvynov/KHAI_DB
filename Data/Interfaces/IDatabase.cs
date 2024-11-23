@@ -5,9 +5,7 @@ using System.Data.Common;
 namespace Data.Interfaces
 {
     public interface IDatabase
-    {
-        public EventHandler<DataBaseExceptionEventArgs>? OnExceptionHappened { get; set; }
-
+    {        
         IDbConnection Open();
 
         IDbCommand BuildCommand(IDbConnection dbConnection, string sql,

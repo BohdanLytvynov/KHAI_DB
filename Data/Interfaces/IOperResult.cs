@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces
+namespace Data.Interfaces
 {
-    public interface IOperResult<TResult>
+    public interface IOperResult
     {
-        public TResult Result { get; }
-
         public bool HasError { get; }
 
         public Exception Error { get; }
     }
+
+    public interface IOperResult<TResult> : IOperResult
+    {
+        public TResult Result { get; }        
+    } 
 }
